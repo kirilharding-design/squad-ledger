@@ -199,11 +199,13 @@ a.player:focus-visible, .back:focus-visible, a:focus-visible { outline: 2px soli
 .heroes.small { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 .heroes.small .hcard b { font-size: 22px; }
 @media (max-width: 760px) {
-  .phead { grid-template-columns: 1fr; }
-  .phead .art { min-height: 250px; background-position: center 30%; }
-  .phead .art::after { background: linear-gradient(180deg, transparent 45%, var(--panel)); }
-  .phead .body { padding: 0 16px 18px; margin-top: -54px; }
-  .phead .name { font-size: 48px; }
+  /* phone: side portrait like the squad cards, stats span the full width underneath */
+  .phead { grid-template-columns: 124px minmax(0, 1fr); padding-bottom: 16px; }
+  .phead .art { min-height: 176px; background-position: center 15%; }
+  .phead .body { display: contents; }
+  .phead .body > :first-child { align-self: center; min-width: 0; padding: 14px 14px 14px 4px; }
+  .phead .pstats, .phead .form { grid-column: 1 / -1; margin: 14px 16px 0; }
+  .phead .name { font-size: 42px; }
   .pstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pstats .wide { grid-column: 1 / -1; }
   .bw { grid-template-columns: 1fr; }
@@ -229,7 +231,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
 <div class="wrap">
   <div class="top">
     <div class="brand"><div class="sigil">S</div><div><h1>Squad Ledger</h1><small>Huddy · Javelinjoe · Kiril</small></div></div>
-    <span class="tag">Updated Oct 17, 8:16 PM</span>
+    <span class="tag">Updated Oct 17, 8:22 PM</span>
   </div>
 
   <nav role="tablist" aria-label="Sections">
