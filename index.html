@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Squad Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Layout: esports stat sheet. Hero portraits carry the color; UI stays charcoal with one amber accent and soul-teal for currency. Single deliberate dark theme. */
+:root {
+  --bg: #121315;
+  --panel: #1a1c1f;
+  --panel-2: #222529;
+  --line: #2d3036;
+  --text: #eceae4;
+  --muted: #8f949c;
+  --amber: #f0a43a;
+  --soul: #5fd4c4;
+  --win: #4fd27e;
+  --loss: #ef5a4c;
+  --display: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif;
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); }
+body { font-family: var(--body); font-size: 15px; line-height: 1.45; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 56px; }
+.num { font-variant-numeric: tabular-nums; }
+.w { color: var(--win); } .l { color: var(--loss); } .soul { color: var(--soul); }
+
+/* ---------- top ---------- */
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-block: 22px 14px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand .sigil { width: 40px; height: 40px; display: grid; place-items: center; background: var(--amber); color: var(--bg); font-family: var(--display); font-weight: 900; font-size: 22px; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.brand h1 { margin: 0; font-family: var(--display); font-weight: 900; font-size: 30px; letter-spacing: .02em; text-transform: uppercase; line-height: 1; }
+.brand small { display: block; font-family: var(--cond); font-weight: 500; font-size: 13px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; margin-top: 3px; }
+.tag { font-family: var(--cond); font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; }
+
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 6px; overflow-x: auto; padding-block: 8px; border-bottom: 1px solid var(--line); }
+nav button { font-family: var(--cond); font-weight: 700; font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 8px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
+nav button:hover { color: var(--text); background: var(--panel); }
+nav button[aria-selected="true"] { color: var(--bg); background: var(--amber); }
+button:focus-visible, .match:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+h2 { font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; letter-spacing: .03em; margin: 0 0 14px; }
+section { padding-top: 26px; }
+
+/* ---------- summary ---------- */
+.summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.stat { background: var(--panel); border-radius: 12px; padding: 16px 18px; }
+.stat .v { font-family: var(--display); font-weight: 900; font-size: 44px; line-height: .95; }
+.stat .k { font-family: var(--cond); font-weight: 600; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.stat.lead { background: linear-gradient(135deg, #2a2116, var(--panel) 70%); box-shadow: inset 0 0 0 1px #4a3a22; }
+@media (max-width: 860px) { .summary { grid-template-columns: repeat(2, 1fr); } .stat.lead { grid-column: 1 / -1; } }
+
+/* ---------- player cards ---------- */
+.players { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 960px) { .players { grid-template-columns: 1fr; } }
+.player { position: relative; display: grid; grid-template-columns: 130px 1fr; background: var(--panel); border-radius: 14px; overflow: hidden; min-height: 190px; }
+.player .art { position: relative; background-size: cover; background-position: center 20%; }
+.player .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 55%, var(--panel)); }
+.player .body { padding: 16px 16px 14px 6px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.player .name { font-family: var(--display); font-weight: 900; font-size: 30px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+.player .main { font-family: var(--cond); font-weight: 600; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); }
+.player .rec { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1; }
+.player .rec .pct { font-family: var(--cond); font-weight: 600; font-size: 14px; color: var(--muted); margin-left: 6px; letter-spacing: .04em; }
+.mini { display: flex; gap: 16px; flex-wrap: wrap; }
+.mini div { display: grid; }
+.mini b { font-family: var(--cond); font-weight: 700; font-size: 18px; }
+.mini span { font-family: var(--cond); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.form { display: flex; gap: 4px; flex-wrap: wrap; }
+.form i { width: 22px; height: 6px; border-radius: 3px; background: var(--loss); }
+.form i.fw { background: var(--win); }
+
+/* ---------- matches ---------- */
+.matches { display: grid; gap: 10px; }
+.match { display: grid; grid-template-columns: 92px 1fr; background: var(--panel); border-radius: 12px; overflow: hidden; cursor: pointer; }
+.match:hover { background: var(--panel-2); }
+.result { display: grid; align-content: center; justify-items: center; gap: 2px; padding: 12px 6px; background: color-mix(in srgb, var(--loss) 16%, var(--panel)); border-right: 3px solid var(--loss); }
+.match.win .result { background: color-mix(in srgb, var(--win) 14%, var(--panel)); border-right-color: var(--win); }
+.result b { font-family: var(--display); font-weight: 900; font-size: 26px; line-height: 1; color: var(--loss); }
+.match.win .result b { color: var(--win); }
+.result span { font-family: var(--cond); font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+.lines { display: grid; padding: 6px 14px; min-width: 0; }
+.pl { display: grid; grid-template-columns: 40px minmax(90px, 1.2fr) repeat(3, minmax(56px, .7fr)); align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.pl:last-child { border-bottom: 0; }
+.pl img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: var(--panel-2); }
+.pl .who { min-width: 0; }
+.pl .who b { display: block; font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl .who span { font-size: 13px; color: var(--muted); }
+.pl .c { font-family: var(--cond); font-weight: 700; font-size: 17px; text-align: right; }
+.pl .c small { display: block; font-weight: 500; font-size: 11px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.crown { color: var(--amber); font-size: 12px; margin-left: 4px; }
+.mhead { display: flex; justify-content: space-between; gap: 8px; font-family: var(--cond); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 0 2px; }
+.extra { grid-column: 1 / -1; padding: 10px 14px 12px 106px; font-size: 13px; color: var(--muted); border-top: 1px dashed var(--line); }
+@media (max-width: 620px) {
+  .match { grid-template-columns: 1fr; }
+  .result { grid-auto-flow: column; justify-content: start; gap: 10px; border-right: 0; border-bottom: 3px solid var(--loss); padding: 8px 14px; }
+  .match.win .result { border-bottom-color: var(--win); }
+  .pl { grid-template-columns: 36px 1fr repeat(2, auto); gap: 10px; }
+  .pl .c.dmg { display: none; }
+  .pl img { width: 36px; height: 36px; }
+  .extra { padding-left: 14px; }
+}
+
+.split { display: grid; grid-template-columns: 1.5fr 1fr; gap: 26px; }
+.split > * { min-width: 0; }
+@media (max-width: 960px) { .split { grid-template-columns: 1fr; } }
+
+/* ---------- records ---------- */
+.records { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.record { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; background: var(--panel); border-radius: 12px; padding: 10px; }
+.record img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; object-position: center 15%; }
+.record .t { font-family: var(--cond); font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.record .v { font-family: var(--display); font-weight: 900; font-size: 28px; line-height: 1.05; }
+.record .h { font-size: 13px; color: var(--muted); } .record .h b { color: var(--text); font-weight: 600; }
+.records.fame .v { color: var(--amber); } .records.shame .v { color: var(--loss); }
+.sub { font-family: var(--cond); font-weight: 600; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+
+/* ---------- heroes ---------- */
+.heroes { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.hcard { position: relative; aspect-ratio: 280 / 380; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--panel) center 20% / cover no-repeat; }
+.hcard::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(10,10,12,.92) 82%); }
+.hcard .info { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1; display: grid; gap: 4px; }
+.hcard b { font-family: var(--display); font-weight: 900; font-size: 26px; text-transform: uppercase; line-height: 1; }
+.hcard .row { display: flex; justify-content: space-between; font-family: var(--cond); font-weight: 600; font-size: 14px; }
+.hcard .bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.15); overflow: hidden; }
+.hcard .bar i { display: block; height: 100%; background: var(--win); }
+.hcard .who { font-size: 12px; color: #c9c6bf; }
+
+.summary > *, .players > *, .matches > *, .records > *, .heroes > *, .lines > *, .pl > * { min-width: 0; }
+@media (max-width: 620px) {
+  .top .tag { display: none; }
+  .stat .v { font-size: 36px; }
+  .player { grid-template-columns: 96px 1fr; min-height: 160px; }
+  .player .name { font-size: 26px; }
+  .mini { gap: 12px; }
+  .pl { grid-template-columns: 34px minmax(0, 1fr) auto auto; gap: 10px; }
+  .pl .c { font-size: 15px; }
+  .records { grid-template-columns: 1fr; }
+  .heroes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hcard b { font-size: 20px; }
+}
+footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+</style>
+</head><body style="margin:0">
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><div class="sigil">S</div><div><h1>Squad Ledger</h1><small>Huddy · Javelinjoe · Kiril</small></div></div>
+    <span class="tag">Updated Oct 17, 7:59 PM</span>
+  </div>
+
+  <nav role="tablist" aria-label="Sections">
+    <button role="tab" id="t-overview" aria-selected="true" data-tab="overview">Overview</button>
+    <button role="tab" id="t-matches" aria-selected="false" data-tab="matches">Matches</button>
+    <button role="tab" id="t-records" aria-selected="false" data-tab="records">Hall of Fame</button>
+    <button role="tab" id="t-heroes" aria-selected="false" data-tab="heroes">Heroes</button>
+  </nav>
+
+  <div id="overview" class="panel">
+    <section><div class="summary" id="summary"></div></section>
+    <section><h2>The squad</h2><div class="players" id="players"></div></section>
+    <section class="split">
+      <div><h2>Recent matches</h2><div class="matches" id="recent"></div></div>
+      <div><h2>Records</h2><div class="records fame" id="miniFame" style="grid-template-columns:1fr"></div></div>
+    </section>
+  </div>
+
+  <div id="matches" class="panel" hidden>
+    <section><h2>All tracked matches</h2><div class="matches" id="all"></div></section>
+  </div>
+
+  <div id="records" class="panel" hidden>
+    <section><h2>Hall of Fame</h2><div class="records fame" id="fame"></div></section>
+    <section><h2>Hall of Shame</h2><div class="records shame" id="shame"></div></section>
+  </div>
+
+  <div id="heroes" class="panel" hidden>
+    <section><h2>Hero pool</h2><div class="heroes" id="heroGrid"></div></section>
+  </div>
+
+  <footer>
+    <span>Stats from deadlock-api.com (fan-run). Only matches the site has collected appear here.</span>
+    <span>Mountain time · rebuilt every 15 minutes by the squad bot</span>
+  </footer>
+</div>
+
+<script>
+const NAMES = {"1349138381": "Kiril", "133941028": "Huddy", "1242779766": "Javelinjoe"};
+const HEROES = {"1": "Infernus", "2": "Seven", "7": "Wraith", "64": "Drifter", "76": "Graves"};
+const HERO_KEY = {"1": "inferno", "2": "gigawatt", "7": "wraith", "64": "drifter", "76": "necro"};
+const GAMES = [{"match_id": 119057203, "account_id": 1349138381, "hero_id": 1, "kills": 3, "deaths": 5, "assists": 14, "souls": 30756, "win": 0, "start_time": 1792270936, "duration_s": 1817, "damage": 25577}, {"match_id": 118562425, "account_id": 1349138381, "hero_id": 76, "kills": 10, "deaths": 15, "assists": 13, "souls": 49853, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 53181}, {"match_id": 118562425, "account_id": 133941028, "hero_id": 64, "kills": 6, "deaths": 14, "assists": 9, "souls": 51599, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": null}, {"match_id": 118562425, "account_id": 1242779766, "hero_id": 2, "kills": 2, "deaths": 9, "assists": 14, "souls": 44984, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": null}, {"match_id": 118477101, "account_id": 1242779766, "hero_id": 2, "kills": 8, "deaths": 3, "assists": 9, "souls": 30710, "win": 1, "start_time": 1792206957, "duration_s": 1767, "damage": null}, {"match_id": 117836538, "account_id": 133941028, "hero_id": 64, "kills": 19, "deaths": 7, "assists": 6, "souls": 42884, "win": 1, "start_time": 1792128407, "duration_s": 2263, "damage": null}, {"match_id": 117836538, "account_id": 1242779766, "hero_id": 2, "kills": 7, "deaths": 6, "assists": 13, "souls": 35867, "win": 1, "start_time": 1792128407, "duration_s": 2263, "damage": null}, {"match_id": 117808315, "account_id": 133941028, "hero_id": 64, "kills": 12, "deaths": 11, "assists": 9, "souls": 32964, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": null}, {"match_id": 117808315, "account_id": 1242779766, "hero_id": 2, "kills": 6, "deaths": 4, "assists": 14, "souls": 32078, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": null}, {"match_id": 117191592, "account_id": 133941028, "hero_id": 64, "kills": 27, "deaths": 8, "assists": 20, "souls": 55211, "win": 0, "start_time": 1792038513, "duration_s": 2428, "damage": null}, {"match_id": 117191592, "account_id": 1242779766, "hero_id": 2, "kills": 11, "deaths": 9, "assists": 31, "souls": 39378, "win": 0, "start_time": 1792038513, "duration_s": 2428, "damage": null}, {"match_id": 59328274, "account_id": 1242779766, "hero_id": 2, "kills": 2, "deaths": 3, "assists": 19, "souls": 29310, "win": 0, "start_time": 1771306385, "duration_s": 1847, "damage": null}, {"match_id": 55407493, "account_id": 1242779766, "hero_id": 2, "kills": 3, "deaths": 5, "assists": 3, "souls": 20074, "win": 1, "start_time": 1770271810, "duration_s": 1320, "damage": null}, {"match_id": 54103233, "account_id": 1242779766, "hero_id": 64, "kills": 2, "deaths": 7, "assists": 7, "souls": 48000, "win": 0, "start_time": 1769926794, "duration_s": 1404, "damage": null}, {"match_id": 54089593, "account_id": 1242779766, "hero_id": 7, "kills": 0, "deaths": 3, "assists": 6, "souls": 34000, "win": 0, "start_time": 1769923320, "duration_s": 822, "damage": null}];
+
+const $ = id => document.getElementById(id);
+const k = n => n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n ?? 0);
+const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+const when = t => new Date(t * 1000).toLocaleString("en-US", {timeZone: "America/Denver", month: "short", day: "numeric", hour: "numeric", minute: "2-digit"});
+const day = t => new Date(t * 1000).toLocaleDateString("en-US", {timeZone: "America/Denver", month: "short", day: "numeric"});
+const kda = g => (g.kills + g.assists) / Math.max(g.deaths, 1);
+const impact = g => g.kills * 3 + g.assists * 1.5 - g.deaths * 2 + g.souls / 4000;
+const card = h => HERO_KEY[h] ? `img/${HERO_KEY[h]}_card.webp` : "";
+const icon = h => HERO_KEY[h] ? `img/${HERO_KEY[h]}_sm.webp` : "";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+const matches = Object.values(GAMES.reduce((m, g) => ((m[g.match_id] ||= {id: g.match_id, start: g.start_time, dur: g.duration_s, win: g.win, players: []}).players.push(g), m), {}))
+  .sort((a, b) => b.start - a.start);
+
+// summary
+const wins = matches.filter(m => m.win).length;
+const duo = matches.filter(m => m.players.length > 1), duoW = duo.filter(m => m.win).length;
+const best = GAMES.reduce((a, b) => impact(b) > impact(a) ? b : a);
+$("summary").innerHTML = `
+  <div class="stat lead"><div class="v num"><span class="w">${wins}</span><span style="color:var(--muted)">–</span><span class="l">${matches.length - wins}</span></div><div class="k">Squad record · ${Math.round(100 * wins / matches.length)}% win rate</div></div>
+  <div class="stat"><div class="v num">${duoW}–${duo.length - duoW}</div><div class="k">Queued together</div></div>
+  <div class="stat"><div class="v num">${GAMES.reduce((s, g) => s + g.kills, 0)}</div><div class="k">Combined kills</div></div>
+  <div class="stat"><div class="v num soul">${k(GAMES.reduce((s, g) => s + g.souls, 0))}</div><div class="k">Souls farmed</div></div>
+  <div class="stat"><div class="v num">${(matches.reduce((s, m) => s + m.dur, 0) / 3600).toFixed(1)}h</div><div class="k">Time in matches</div></div>`;
+
+// players
+const players = Object.keys(NAMES).map(Number).filter(id => GAMES.some(g => g.account_id === id)).map(id => {
+  const gs = GAMES.filter(g => g.account_id === id).sort((a, b) => a.start_time - b.start_time);
+  const w = gs.filter(g => g.win).length;
+  const counts = gs.reduce((m, g) => (m[g.hero_id] = (m[g.hero_id] || 0) + 1, m), {});
+  const main = +Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+  const avg = f => gs.reduce((s, g) => s + g[f], 0) / gs.length;
+  return {id, gs, w, main, k: avg("kills"), d: avg("deaths"), a: avg("assists"), souls: avg("souls")};
+}).sort((a, b) => b.gs.length - a.gs.length);
+$("players").innerHTML = players.map(p => `
+  <article class="player">
+    <div class="art" style="background-image:url('${card(p.main)}')" role="img" aria-label="${HEROES[p.main]}"></div>
+    <div class="body">
+      <div><div class="name">${esc(NAMES[p.id])}</div><div class="main">Main · ${HEROES[p.main]}</div></div>
+      <div class="rec num"><span class="w">${p.w}W</span> <span class="l">${p.gs.length - p.w}L</span><span class="pct">${Math.round(100 * p.w / p.gs.length)}%</span></div>
+      <div class="mini">
+        <div><b class="num">${p.k.toFixed(1)} / ${p.d.toFixed(1)} / ${p.a.toFixed(1)}</b><span>Avg K / D / A</span></div>
+        <div><b class="num soul">${k(Math.round(p.souls))}</b><span>Souls / game</span></div>
+      </div>
+      <div class="form" title="Last ${Math.min(10, p.gs.length)} games, oldest first">${p.gs.slice(-10).map(g => `<i class="${g.win ? "fw" : ""}"></i>`).join("")}</div>
+    </div>
+  </article>`).join("");
+
+// matches
+function matchHTML(m) {
+  const ranked = [...m.players].sort((a, b) => impact(b) - impact(a));
+  return `<article class="match ${m.win ? "win" : ""}" tabindex="0" data-id="${m.id}">
+    <div class="result"><b>${m.win ? "WIN" : "LOSS"}</b><span>${mmss(m.dur)}</span><span>${day(m.start)}</span></div>
+    <div class="lines">${ranked.map((g, i) => `
+      <div class="pl">
+        <img src="${icon(g.hero_id)}" alt="${HEROES[g.hero_id]}">
+        <div class="who"><b>${esc(NAMES[g.account_id])}${ranked.length > 1 && i === 0 ? '<span class="crown">★ MVP</span>' : ""}</b><span>${HEROES[g.hero_id]}</span></div>
+        <div class="c num">${g.kills}/${g.deaths}/${g.assists}<small>K/D/A</small></div>
+        <div class="c num soul">${k(g.souls)}<small>Souls</small></div>
+        <div class="c num dmg">${g.damage ? k(g.damage) : "–"}<small>Damage</small></div>
+      </div>`).join("")}
+    </div>
+  </article>`;
+}
+$("recent").innerHTML = matches.slice(0, 5).map(matchHTML).join("");
+$("all").innerHTML = matches.map(matchHTML).join("");
+function toggle(el) {
+  if (!el) return;
+  const open = el.querySelector(".extra");
+  if (open) return open.remove();
+  const m = matches.find(x => String(x.id) === el.dataset.id);
+  const d = document.createElement("div");
+  d.className = "extra";
+  d.textContent = `${when(m.start)} · match ${m.id} · squad souls ${k(m.players.reduce((s, g) => s + g.souls, 0))}. In the live version this opens the full scoreboard, item builds and death timeline.`;
+  el.appendChild(d);
+}
+document.querySelectorAll(".matches").forEach(list => {
+  list.addEventListener("click", e => toggle(e.target.closest(".match")));
+  list.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e.target.closest(".match")); } });
+});
+
+// records (same rules as the Discord bot)
+const REC = [
+  ["fame", "Most kills", g => g.kills, 1, () => true, v => `${v} kills`],
+  ["fame", "Most assists", g => g.assists, 1, () => true, v => `${v} assists`],
+  ["fame", "Richest game", g => g.souls, 1, () => true, v => `${k(v)} souls`],
+  ["fame", "Best KDA", kda, 1, g => g.kills + g.assists >= 5, v => `${v.toFixed(1)} KDA`],
+  ["fame", "Fastest win", g => g.duration_s, -1, g => g.win && g.duration_s >= 600, v => mmss(v)],
+  ["shame", "Most deaths", g => g.deaths, 1, () => true, v => `${v} deaths`],
+  ["shame", "Worst KDA", kda, -1, g => g.deaths >= 5, v => `${v.toFixed(1)} KDA`],
+  ["shame", "Brokest full game", g => g.souls, -1, g => g.duration_s >= 1500, v => `${k(v)} souls`],
+  ["shame", "Longest loss", g => g.duration_s, 1, g => !g.win, v => mmss(v)],
+  ["shame", "Most deaths, zero kills", g => g.deaths, 1, g => g.kills === 0, v => `0 / ${v}`]
+];
+function recordHTML([, title, val, dir, ok, fmt]) {
+  const pool = GAMES.filter(ok);
+  if (!pool.length) return "";
+  const g = pool.reduce((a, b) => dir * (val(b) - val(a)) > 0 ? b : a);
+  return `<div class="record"><img src="${card(g.hero_id)}" alt="${HEROES[g.hero_id]}">
+    <div><div class="t">${title}</div><div class="v num">${fmt(val(g))}</div><div class="h"><b>${esc(NAMES[g.account_id])}</b> · ${HEROES[g.hero_id]} · ${day(g.start_time)}</div></div></div>`;
+}
+$("fame").innerHTML = REC.filter(r => r[0] === "fame").map(recordHTML).join("");
+$("shame").innerHTML = REC.filter(r => r[0] === "shame").map(recordHTML).join("");
+$("miniFame").innerHTML = [REC[0], REC[2], REC[5]].map(recordHTML).join("");
+
+// heroes
+const hs = Object.values(GAMES.reduce((m, g) => {
+  const h = (m[g.hero_id] ||= {id: g.hero_id, g: 0, w: 0, who: new Set()});
+  h.g++; h.w += g.win; h.who.add(NAMES[g.account_id]); return m;
+}, {})).sort((a, b) => b.g - a.g);
+$("heroGrid").innerHTML = hs.map(h => `
+  <div class="hcard" style="background-image:url('${card(h.id)}')">
+    <div class="info"><b>${HEROES[h.id]}</b>
+      <div class="row num"><span>${h.g} games</span><span class="${h.w / h.g >= .5 ? "w" : "l"}">${Math.round(100 * h.w / h.g)}% WR</span></div>
+      <div class="bar"><i style="width:${Math.round(100 * h.w / h.g)}%"></i></div>
+      <div class="who">${[...h.who].map(esc).join(", ")}</div></div>
+  </div>`).join("");
+
+// tabs
+const tabs = document.querySelectorAll("nav button");
+function show(name) {
+  tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+  document.querySelectorAll(".panel").forEach(p => p.hidden = p.id !== name);
+  try { localStorage.setItem("ledger-tab", name); } catch (e) {}
+}
+tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.tab)));
+let start = "overview";
+try { start = localStorage.getItem("ledger-tab") || start; } catch (e) {}
+const hash = location.hash.slice(1);
+if (["overview", "matches", "records", "heroes"].includes(hash)) start = hash;
+show(start);
+</script>
+
+</body></html>
