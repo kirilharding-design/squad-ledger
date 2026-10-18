@@ -131,7 +131,85 @@ section { padding-top: 26px; }
 .hcard .bar i { display: block; height: 100%; background: var(--win); }
 .hcard .who { font-size: 12px; color: #c9c6bf; }
 
-.summary > *, .players > *, .matches > *, .records > *, .heroes > *, .lines > *, .pl > * { min-width: 0; }
+/* ---------- streaks + links ---------- */
+.streak { display: inline-flex; align-items: center; gap: 5px; font-family: var(--cond); font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 10px 3px 7px; border-radius: 999px; background: var(--panel-2); white-space: nowrap; vertical-align: middle; }
+.streak.hot { color: var(--win); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--win) 35%, transparent); }
+.streak.cold { color: var(--loss); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--loss) 35%, transparent); }
+a.player { color: inherit; text-decoration: none; transition: background .15s; }
+a.player:hover { background: var(--panel-2); }
+a.player:hover .art::after { background: linear-gradient(90deg, transparent 55%, var(--panel-2)); }
+.player .open { font-family: var(--cond); font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+a.player:hover .open { color: var(--amber); }
+a.player:focus-visible, .back:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.pl .who a, .duo .names a { color: inherit; text-decoration: none; }
+.pl .who a:hover, .duo .names a:hover { color: var(--amber); }
+#players { scroll-margin-top: 70px; }
+
+/* ---------- duos ---------- */
+.duos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 10px; }
+.duo { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; background: var(--panel); border-radius: 12px; padding: 10px 14px 10px 10px; }
+.duo .pair { display: flex; }
+.duo .pair img { width: 58px; height: 76px; object-fit: cover; object-position: center 15%; border-radius: 10px; border: 2px solid var(--panel); background: var(--panel-2); }
+.duo .pair img + img { margin-left: -18px; }
+.duo .dinfo { display: grid; gap: 5px; min-width: 0; }
+.duo .names { font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+.duo .drec { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1; }
+.duo .drec .pct { font-family: var(--cond); font-weight: 600; font-size: 14px; color: var(--muted); margin-left: 6px; }
+.duo .bar { height: 5px; border-radius: 3px; background: var(--loss); overflow: hidden; opacity: .85; }
+.duo .bar i { display: block; height: 100%; background: var(--win); }
+.duo .note { font-family: var(--cond); font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.duo.best { background: linear-gradient(135deg, #2a2116, var(--panel) 70%); box-shadow: inset 0 0 0 1px #4a3a22; }
+.duo.best .note { color: var(--amber); }
+.duo.worst { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--loss) 40%, transparent); }
+.duo.worst .note { color: var(--loss); }
+.empty { color: var(--muted); font-size: 14px; }
+
+/* ---------- player page ---------- */
+.back { display: inline-flex; gap: 6px; font-family: var(--cond); font-weight: 700; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 18px 0 4px; }
+.back:hover { color: var(--amber); }
+.phead { display: grid; grid-template-columns: 250px minmax(0, 1fr); background: var(--panel); border-radius: 16px; overflow: hidden; margin-top: 10px; }
+.phead .art { position: relative; min-height: 310px; background-size: cover; background-position: center 18%; }
+.phead .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 55%, var(--panel)); }
+.phead .body { position: relative; display: grid; gap: 16px; align-content: center; padding: 24px 26px 24px 8px; min-width: 0; }
+.phead .kicker { font-family: var(--cond); font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.phead .name { font-family: var(--display); font-weight: 900; font-size: 68px; line-height: .9; text-transform: uppercase; overflow-wrap: anywhere; margin: 4px 0 6px; }
+.phead .main { font-family: var(--cond); font-weight: 600; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.pstats { display: grid; grid-template-columns: 1fr 1fr 1.7fr 1fr; gap: 10px; }
+.pstats > div { background: var(--panel-2); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.pstats b { display: block; font-family: var(--display); font-weight: 900; font-size: 34px; line-height: 1; white-space: nowrap; }
+.pstats > div > span { display: block; font-family: var(--cond); font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.phead .form i { width: 26px; height: 7px; }
+.chart { background: var(--panel); border-radius: 14px; padding: 12px 14px 6px; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart text { fill: var(--muted); font-family: var(--cond); font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+.chart text.avg-l { fill: var(--amber); }
+.chart .avg { stroke: var(--amber); stroke-width: 1; stroke-dasharray: 5 5; opacity: .7; }
+.chart .ln { fill: none; stroke: var(--text); stroke-width: 2; opacity: .55; stroke-linejoin: round; }
+.chart .dw { fill: var(--win); stroke: var(--panel); stroke-width: 2; }
+.chart .dl { fill: var(--loss); stroke: var(--panel); stroke-width: 2; }
+.chart .legend { display: flex; flex-wrap: wrap; gap: 16px; font-family: var(--cond); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 2px 2px 8px; }
+.chart .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.bw { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.bw .record { grid-template-columns: 92px 1fr; padding: 12px; }
+.bw .record img { width: 92px; height: 112px; }
+.bw .record .v { font-size: 34px; }
+.bw .q { font-size: 13px; font-style: italic; color: var(--muted); margin-top: 4px; }
+.bw .best .v { color: var(--amber); } .bw .worst .v { color: var(--loss); }
+.heroes.small { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+.heroes.small .hcard b { font-size: 22px; }
+@media (max-width: 760px) {
+  .phead { grid-template-columns: 1fr; }
+  .phead .art { min-height: 250px; background-position: center 30%; }
+  .phead .art::after { background: linear-gradient(180deg, transparent 45%, var(--panel)); }
+  .phead .body { padding: 0 16px 18px; margin-top: -54px; }
+  .phead .name { font-size: 48px; }
+  .pstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pstats .wide { grid-column: 1 / -1; }
+  .bw { grid-template-columns: 1fr; }
+}
+
+.summary > *, .players > *, .matches > *, .records > *, .heroes > *, .lines > *, .pl > *, .duos > *, .bw > * { min-width: 0; }
 @media (max-width: 620px) {
   .top .tag { display: none; }
   .stat .v { font-size: 36px; }
@@ -151,7 +229,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
 <div class="wrap">
   <div class="top">
     <div class="brand"><div class="sigil">S</div><div><h1>Squad Ledger</h1><small>Huddy · Javelinjoe · Kiril</small></div></div>
-    <span class="tag">Updated Oct 17, 8:00 PM</span>
+    <span class="tag">Updated Oct 17, 8:16 PM</span>
   </div>
 
   <nav role="tablist" aria-label="Sections">
@@ -161,27 +239,30 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
     <button role="tab" id="t-heroes" aria-selected="false" data-tab="heroes">Heroes</button>
   </nav>
 
-  <div id="overview" class="panel">
+  <div id="p-overview" class="panel">
     <section><div class="summary" id="summary"></div></section>
     <section><h2>The squad</h2><div class="players" id="players"></div></section>
+    <section><h2>Duos</h2><div class="duos" id="duos"></div><div id="trios"></div></section>
     <section class="split">
       <div><h2>Recent matches</h2><div class="matches" id="recent"></div></div>
       <div><h2>Records</h2><div class="records fame" id="miniFame" style="grid-template-columns:1fr"></div></div>
     </section>
   </div>
 
-  <div id="matches" class="panel" hidden>
+  <div id="p-matches" class="panel" hidden>
     <section><h2>All tracked matches</h2><div class="matches" id="all"></div></section>
   </div>
 
-  <div id="records" class="panel" hidden>
+  <div id="p-records" class="panel" hidden>
     <section><h2>Hall of Fame</h2><div class="records fame" id="fame"></div></section>
     <section><h2>Hall of Shame</h2><div class="records shame" id="shame"></div></section>
   </div>
 
-  <div id="heroes" class="panel" hidden>
+  <div id="p-heroes" class="panel" hidden>
     <section><h2>Hero pool</h2><div class="heroes" id="heroGrid"></div></section>
   </div>
+
+  <div id="p-player" class="panel" hidden></div>
 
   <footer>
     <span>Stats from deadlock-api.com (fan-run). Only matches the site has collected appear here.</span>
@@ -227,21 +308,72 @@ const players = Object.keys(NAMES).map(Number).filter(id => GAMES.some(g => g.ac
   const counts = gs.reduce((m, g) => (m[g.hero_id] = (m[g.hero_id] || 0) + 1, m), {});
   const main = +Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
   const avg = f => gs.reduce((s, g) => s + g[f], 0) / gs.length;
-  return {id, gs, w, main, k: avg("kills"), d: avg("deaths"), a: avg("assists"), souls: avg("souls")};
+  return {id, gs, w, main, k: avg("kills"), d: avg("deaths"), a: avg("assists"), souls: avg("souls"), streak: streak(gs)};
 }).sort((a, b) => b.gs.length - a.gs.length);
+const pmap = Object.fromEntries(players.map(p => [p.id, p]));
+
+// current run of same results, newest games first; only 3+ counts
+function streak(gs) {
+  if (!gs.length) return null;
+  const last = gs[gs.length - 1].win;
+  let n = 0;
+  for (let i = gs.length - 1; i >= 0 && gs[i].win === last; i--) n++;
+  return n >= 3 ? {win: !!last, n} : null;
+}
+const streakHTML = s => s ? `<span class="streak ${s.win ? "hot" : "cold"}" title="${s.n} ${s.win ? "wins" : "losses"} in a row"><span aria-hidden="true">${s.win ? "🔥" : "🧊"}</span>${s.n}${s.win ? "W" : "L"} streak</span>` : "";
+const formHTML = gs => `<div class="form" title="Last ${Math.min(10, gs.length)} games, oldest first">${gs.slice(-10).map(g => `<i class="${g.win ? "fw" : ""}"></i>`).join("")}</div>`;
+
 $("players").innerHTML = players.map(p => `
-  <article class="player">
+  <a class="player" href="#player-${p.id}">
     <div class="art" style="background-image:url('${card(p.main)}')" role="img" aria-label="${HEROES[p.main]}"></div>
     <div class="body">
       <div><div class="name">${esc(NAMES[p.id])}</div><div class="main">Main · ${HEROES[p.main]}</div></div>
+      ${p.streak ? `<div>${streakHTML(p.streak)}</div>` : ""}
       <div class="rec num"><span class="w">${p.w}W</span> <span class="l">${p.gs.length - p.w}L</span><span class="pct">${Math.round(100 * p.w / p.gs.length)}%</span></div>
       <div class="mini">
         <div><b class="num">${p.k.toFixed(1)} / ${p.d.toFixed(1)} / ${p.a.toFixed(1)}</b><span>Avg K / D / A</span></div>
         <div><b class="num soul">${k(Math.round(p.souls))}</b><span>Souls / game</span></div>
       </div>
-      <div class="form" title="Last ${Math.min(10, p.gs.length)} games, oldest first">${p.gs.slice(-10).map(g => `<i class="${g.win ? "fw" : ""}"></i>`).join("")}</div>
+      ${formHTML(p.gs)}
+      <span class="open">Player file →</span>
     </div>
-  </article>`).join("");
+  </a>`).join("");
+
+// duos and trios: every match counts for every group of squad members in it
+const combos = (arr, n) => n === 1 ? arr.map(x => [x]) : arr.flatMap((x, i) => combos(arr.slice(i + 1), n - 1).map(c => [x, ...c]));
+function groups(size) {
+  const out = {};
+  for (const m of matches) {
+    const ids = [...new Set(m.players.map(g => g.account_id))].filter(id => pmap[id]).sort((a, b) => a - b);
+    for (const c of combos(ids, size)) {
+      const o = (out[c.join("-")] ||= {ids: c, g: 0, w: 0});
+      o.g++; o.w += m.win;
+    }
+  }
+  return Object.values(out).sort((a, b) => b.w / b.g - a.w / a.g || b.g - a.g);
+}
+function groupHTML(d, cls, note) {
+  const pct = Math.round(100 * d.w / d.g);
+  return `<div class="duo ${cls}">
+    <div class="pair">${d.ids.map(id => `<img src="${card(pmap[id].main)}" alt="">`).join("")}</div>
+    <div class="dinfo">
+      <div class="names">${d.ids.map(id => `<a href="#player-${id}">${esc(NAMES[id])}</a>`).join(" + ")}</div>
+      <div class="drec num"><span class="w">${d.w}W</span> <span class="l">${d.g - d.w}L</span><span class="pct">${pct}%</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      ${note ? `<div class="note">${note}</div>` : ""}
+    </div></div>`;
+}
+const duos = groups(2), trios = groups(3);
+const rated = duos.filter(d => d.g >= 2);
+const bestDuo = rated.length && rated[0].w / rated[0].g >= .5 ? rated[0] : null;
+const worstDuo = rated.length && rated.at(-1) !== bestDuo && rated.at(-1).w / rated.at(-1).g < .5 ? rated.at(-1) : null;
+const duoNote = d => d === bestDuo ? "Best duo. Keep queuing together." : d === worstDuo ? "Maybe stop queuing together." : d.g < 2 ? "One game. Inconclusive." : "";
+$("duos").innerHTML = duos.length
+  ? duos.map(d => groupHTML(d, d === bestDuo ? "best" : d === worstDuo ? "worst" : "", duoNote(d))).join("")
+  : `<p class="empty">Nobody has queued together yet. Suspicious.</p>`;
+$("trios").innerHTML = trios.length
+  ? `<h3 class="sub" style="margin-top:18px">Three-stacks</h3><div class="duos">${trios.map(t => groupHTML(t, "", t.w / t.g >= .5 ? "" : t.g >= 2 ? "Strength in numbers, allegedly." : "")).join("")}</div>`
+  : "";
 
 // matches
 function matchHTML(m) {
@@ -251,7 +383,7 @@ function matchHTML(m) {
     <div class="lines">${ranked.map((g, i) => `
       <div class="pl">
         <img src="${icon(g.hero_id)}" alt="${HEROES[g.hero_id]}">
-        <div class="who"><b>${esc(NAMES[g.account_id])}${ranked.length > 1 && i === 0 ? '<span class="crown">★ MVP</span>' : ""}</b><span>${HEROES[g.hero_id]}</span></div>
+        <div class="who"><b><a href="#player-${g.account_id}">${esc(NAMES[g.account_id])}</a>${ranked.length > 1 && i === 0 ? '<span class="crown">★ MVP</span>' : ""}</b><span>${HEROES[g.hero_id]}</span></div>
         <div class="c num">${g.kills}/${g.deaths}/${g.assists}<small>K/D/A</small></div>
         <div class="c num soul">${k(g.souls)}<small>Souls</small></div>
         <div class="c num dmg">${g.damage ? k(g.damage) : "–"}<small>Damage</small></div>
@@ -271,9 +403,10 @@ function toggle(el) {
   d.textContent = `${when(m.start)} · match ${m.id} · squad souls ${k(m.players.reduce((s, g) => s + g.souls, 0))}. In the live version this opens the full scoreboard, item builds and death timeline.`;
   el.appendChild(d);
 }
-document.querySelectorAll(".matches").forEach(list => {
-  list.addEventListener("click", e => toggle(e.target.closest(".match")));
-  list.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e.target.closest(".match")); } });
+// delegated so match lists drawn later (player pages) work too; name links navigate instead
+document.addEventListener("click", e => { if (!e.target.closest("a")) toggle(e.target.closest(".match")); });
+document.addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("match")) { e.preventDefault(); toggle(e.target); }
 });
 
 // records (same rules as the Discord bot)
@@ -313,19 +446,130 @@ $("heroGrid").innerHTML = hs.map(h => `
       <div class="who">${[...h.who].map(esc).join(", ")}</div></div>
   </div>`).join("");
 
-// tabs
+// player page
+function renderPlayer(p) {
+  const n = p.gs.length, pct = Math.round(100 * p.w / n);
+  const ranked = [...p.gs].sort((a, b) => impact(b) - impact(a));
+  const pool = Object.values(p.gs.reduce((m, g) => {
+    const h = (m[g.hero_id] ||= {id: g.hero_id, g: 0, w: 0, kda: 0});
+    h.g++; h.w += g.win; h.kda += kda(g); return m;
+  }, {})).sort((a, b) => b.g - a.g || b.w - a.w);
+  const mine = matches.filter(m => m.players.some(g => g.account_id === p.id));
+  const gameCard = (g, cls, title, quip) => `<div class="record ${cls}"><img src="${card(g.hero_id)}" alt="${HEROES[g.hero_id]}">
+    <div><div class="t">${title}</div><div class="v num">${g.kills} / ${g.deaths} / ${g.assists}</div>
+    <div class="h"><b class="${g.win ? "w" : "l"}">${g.win ? "Win" : "Loss"}</b> · ${HEROES[g.hero_id]} · <span class="soul">${k(g.souls)}</span> souls · ${day(g.start_time)}</div>
+    <div class="q">${quip}</div></div></div>`;
+  $("p-player").innerHTML = `
+    <a class="back" href="#overview">← Back to overview</a>
+    <div class="phead">
+      <div class="art" style="background-image:url('${card(p.main)}')" role="img" aria-label="${HEROES[p.main]}"></div>
+      <div class="body">
+        <div>
+          <div class="kicker">Player file · ${n} game${n === 1 ? "" : "s"} tracked</div>
+          <div class="name">${esc(NAMES[p.id])}</div>
+          <div class="main"><span>Main · ${HEROES[p.main]}</span>${streakHTML(p.streak)}</div>
+        </div>
+        <div class="pstats">
+          <div><b class="num"><span class="w">${p.w}</span><span style="color:var(--muted)">–</span><span class="l">${n - p.w}</span></b><span>Record</span></div>
+          <div><b class="num ${pct >= 50 ? "w" : "l"}">${pct}%</b><span>Win rate</span></div>
+          <div class="wide"><b class="num">${p.k.toFixed(1)} / ${p.d.toFixed(1)} / ${p.a.toFixed(1)}</b><span>Avg K / D / A</span></div>
+          <div class="wide"><b class="num soul">${k(Math.round(p.souls))}</b><span>Souls / game</span></div>
+        </div>
+        ${formHTML(p.gs)}
+      </div>
+    </div>
+    <section><h2>KDA per game</h2>
+      <div class="chart"><div class="legend"><span><i style="background:var(--win)"></i>Win</span><span><i style="background:var(--loss)"></i>Loss</span><span>(kills + assists) ÷ deaths · oldest to newest</span></div><div id="kdaChart"></div></div>
+    </section>
+    <section><h2>Best and worst</h2><div class="bw">${n === 1
+      ? gameCard(ranked[0], "best", "Only game", "One game on file. It is both the best and the worst.")
+      : gameCard(ranked[0], "best", "Best game", "Exhibit A.") + gameCard(ranked.at(-1), "worst", "Worst game", "Exhibit B. The defense rests.")}</div>
+    </section>
+    <section><h2>Hero pool</h2><div class="heroes small">${pool.map(h => `
+      <div class="hcard" style="background-image:url('${card(h.id)}')">
+        <div class="info"><b>${HEROES[h.id]}</b>
+          <div class="row num"><span>${h.g} game${h.g === 1 ? "" : "s"}</span><span class="${h.w / h.g >= .5 ? "w" : "l"}">${Math.round(100 * h.w / h.g)}% WR</span></div>
+          <div class="bar"><i style="width:${Math.round(100 * h.w / h.g)}%"></i></div>
+          <div class="who">${(h.kda / h.g).toFixed(1)} avg KDA</div></div>
+      </div>`).join("")}</div>
+    </section>
+    <section><h2>Matches</h2><div class="matches">${mine.map(matchHTML).join("")}</div></section>`;
+  drawChart(p);
+}
+
+// KDA trend, drawn at the container's real width so labels stay readable on phones
+function drawChart(p) {
+  const box = $("kdaChart");
+  if (!box) return;
+  const vals = p.gs.map(kda), n = vals.length;
+  const W = Math.max(260, box.clientWidth), H = W < 520 ? 200 : 240;
+  const L = 34, R = 12, T = 12, B = 28, iw = W - L - R, ih = H - T - B;
+  const top = Math.max(...vals, 1);
+  const step = [0.5, 1, 2, 2.5, 5, 10, 20, 50].find(s => Math.ceil(top / s) <= 5);
+  const max = Math.ceil(top / step) * step;
+  const x = i => L + (n === 1 ? iw / 2 : iw * i / (n - 1));
+  const y = v => T + ih - ih * v / max;
+  const avg = vals.reduce((s, v) => s + v, 0) / n;
+  const r = n > 40 ? 3 : n > 20 ? 4 : 5;
+  const every = Math.max(1, Math.ceil(n / Math.max(2, Math.floor(iw / 64))));
+  let svg = "";
+  for (let v = 0; v <= max + 1e-9; v += step) {
+    svg += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${+v.toFixed(1)}</text>`;
+  }
+  p.gs.forEach((g, i) => {
+    if (i % every === 0 || i === n - 1) {
+      if (i === n - 1 && i % every !== 0 && x(i) - x(i - i % every) < 48) return;
+      svg += `<text x="${x(i)}" y="${H - 8}" text-anchor="${n === 1 ? "middle" : i === 0 ? "start" : i === n - 1 ? "end" : "middle"}">${day(g.start_time)}</text>`;
+    }
+  });
+  svg += `<line class="avg" x1="${L}" x2="${W - R}" y1="${y(avg)}" y2="${y(avg)}"/><text class="avg-l" x="${W - R}" y="${y(avg) - 6}" text-anchor="end">AVG ${avg.toFixed(1)}</text>`;
+  if (n > 1) svg += `<polyline class="ln" points="${vals.map((v, i) => `${x(i)},${y(v)}`).join(" ")}"/>`;
+  svg += p.gs.map((g, i) => `<circle class="${g.win ? "dw" : "dl"}" cx="${x(i)}" cy="${y(vals[i])}" r="${r}"><title>${day(g.start_time)} · ${g.win ? "Win" : "Loss"} · ${HEROES[g.hero_id]} · ${g.kills}/${g.deaths}/${g.assists} · KDA ${vals[i].toFixed(1)}</title></circle>`).join("");
+  box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="KDA per game for ${esc(NAMES[p.id])}, average ${avg.toFixed(1)}">${svg}</svg>`;
+}
+
+// tabs + hash routing (#overview, #matches, #records, #heroes, #player-<account id>)
+const PANELS = ["overview", "matches", "records", "heroes"];
 const tabs = document.querySelectorAll("nav button");
+let current = null;
 function show(name) {
   tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
-  document.querySelectorAll(".panel").forEach(p => p.hidden = p.id !== name);
-  try { localStorage.setItem("ledger-tab", name); } catch (e) {}
+  document.querySelectorAll(".panel").forEach(p => p.hidden = p.id !== "p-" + name);
+  if (PANELS.includes(name)) try { localStorage.setItem("ledger-tab", name); } catch (e) {}
 }
-tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.tab)));
-let start = "overview";
-try { start = localStorage.getItem("ledger-tab") || start; } catch (e) {}
-const hash = location.hash.slice(1);
-if (["overview", "matches", "records", "heroes"].includes(hash)) start = hash;
-show(start);
+function route() {
+  const h = location.hash.slice(1);
+  const id = (h.match(/^player-(\d+)$/) || [])[1];
+  const was = current;
+  if (id && pmap[+id]) {
+    current = "player";
+    show("player");
+    renderPlayer(pmap[+id]);
+    document.title = `${NAMES[id]} · Squad Ledger`;
+    window.scrollTo(0, 0);
+    return;
+  }
+  let start = "overview";
+  try { start = localStorage.getItem("ledger-tab") || start; } catch (e) {}
+  if (PANELS.includes(h)) start = h;
+  if (!PANELS.includes(start)) start = "overview";
+  current = start;
+  show(start);
+  document.title = "Squad Ledger";
+  if (was === "player") start === "overview" ? $("players").scrollIntoView() : window.scrollTo(0, 0);
+}
+tabs.forEach(t => t.addEventListener("click", () => {
+  if (location.hash === "#" + t.dataset.tab) route();
+  else location.hash = t.dataset.tab;
+}));
+window.addEventListener("hashchange", route);
+let resizeQueued = false;
+window.addEventListener("resize", () => {
+  if (current !== "player" || resizeQueued) return;
+  resizeQueued = true;
+  requestAnimationFrame(() => { resizeQueued = false; const id = +location.hash.split("-")[1]; if (pmap[id]) drawChart(pmap[id]); });
+});
+route();
 </script>
 
 </body></html>
