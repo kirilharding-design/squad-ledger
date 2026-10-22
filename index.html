@@ -137,6 +137,16 @@ section { padding-top: 26px; }
 .streak.hot { color: var(--win); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--win) 35%, transparent); }
 .streak.cold { color: var(--loss); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--loss) 35%, transparent); }
 .streak.tally { color: var(--text); padding-left: 9px; }
+
+/* ---------- achievements ---------- */
+.ach { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.ach > div { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; align-items: center; background: var(--panel); border-radius: 12px; padding: 10px 12px; }
+.ach .e { font-size: 26px; text-align: center; }
+.ach .n { font-family: var(--cond); font-weight: 700; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+.ach .d { font-size: 12px; color: var(--muted); } .ach .d b { color: var(--text); font-weight: 600; }
+.ach .glory .n { color: var(--amber); } .ach .shame .n { color: var(--loss); }
+.ach .locked { opacity: .35; filter: grayscale(1); }
+.ach .empty { grid-column: 1 / -1; }
 a.player { color: inherit; text-decoration: none; transition: background .15s; }
 a.player:hover { background: var(--panel-2); }
 a.player:hover .art::after { background: linear-gradient(90deg, transparent 55%, var(--panel-2)); }
@@ -235,7 +245,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
 <div class="wrap">
   <div class="top">
     <div class="brand"><div class="sigil">S</div><div><h1>Squad Ledger</h1><small>Huddy · Javelinjoe · Kiril · ashton.atkinson · gabehorn</small></div></div>
-    <span class="tag">Updated Oct 21, 8:09 PM</span>
+    <span class="tag">Updated Oct 21, 9:19 PM</span>
   </div>
 
   <nav role="tablist" aria-label="Sections">
@@ -262,6 +272,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
   <div id="p-records" class="panel" hidden>
     <section><h2>Hall of Fame</h2><div class="records fame" id="fame"></div></section>
     <section><h2>Hall of Shame</h2><div class="records shame" id="shame"></div></section>
+    <section><h2>Latest achievements</h2><div class="ach" id="achFeed"></div></section>
   </div>
 
   <div id="p-heroes" class="panel" hidden>
@@ -280,7 +291,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
 const NAMES = {"1349138381": "Kiril", "133941028": "Huddy", "1242779766": "Javelinjoe", "1046229974": "ashton.atkinson", "1513582526": "gabehorn"};
 const HEROES = {"1": "Infernus", "2": "Seven", "3": "Vindicta", "4": "Lady Geist", "6": "Abrams", "7": "Wraith", "12": "Kelvin", "15": "Bebop", "64": "Drifter", "76": "Graves", "80": "Silver", "87": "Nurse Harrow"};
 const HERO_KEY = {"1": "inferno", "2": "gigawatt", "3": "hornet", "4": "spectre", "6": "bull", "7": "wraith", "12": "kelvin", "15": "bebop", "64": "drifter", "76": "necro", "80": "werewolf", "87": "nurse"};
-const GAMES = [{"match_id": 121405051, "account_id": 1349138381, "hero_id": 1, "kills": 4, "deaths": 5, "assists": 14, "souls": 33933, "win": 1, "start_time": 1792554107, "duration_s": 2069, "damage": 29057}, {"match_id": 121405051, "account_id": 133941028, "hero_id": 64, "kills": 9, "deaths": 4, "assists": 10, "souls": 38714, "win": 1, "start_time": 1792554107, "duration_s": 2069, "damage": 28488}, {"match_id": 121405051, "account_id": 1242779766, "hero_id": 2, "kills": 1, "deaths": 2, "assists": 13, "souls": 38741, "win": 1, "start_time": 1792554107, "duration_s": 2069, "damage": 17082}, {"match_id": 121379943, "account_id": 1349138381, "hero_id": 4, "kills": 2, "deaths": 7, "assists": 8, "souls": 35687, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": 23664}, {"match_id": 121379943, "account_id": 133941028, "hero_id": 87, "kills": 2, "deaths": 7, "assists": 9, "souls": 26812, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": 13634}, {"match_id": 121379943, "account_id": 1242779766, "hero_id": 2, "kills": 4, "deaths": 5, "assists": 8, "souls": 26961, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": 15459}, {"match_id": 121379943, "account_id": 1513582526, "hero_id": 3, "kills": 1, "deaths": 7, "assists": 7, "souls": 23656, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": null}, {"match_id": 119396116, "account_id": 1349138381, "hero_id": 4, "kills": 7, "deaths": 7, "assists": 6, "souls": 30611, "win": 0, "start_time": 1792307743, "duration_s": 1742, "damage": 30117}, {"match_id": 119396116, "account_id": 133941028, "hero_id": 64, "kills": 9, "deaths": 10, "assists": 7, "souls": 26008, "win": 0, "start_time": 1792307743, "duration_s": 1742, "damage": 25018}, {"match_id": 119396116, "account_id": 1242779766, "hero_id": 2, "kills": 1, "deaths": 5, "assists": 2, "souls": 24567, "win": 0, "start_time": 1792307743, "duration_s": 1742, "damage": 9948}, {"match_id": 119362656, "account_id": 1349138381, "hero_id": 80, "kills": 6, "deaths": 12, "assists": 5, "souls": 27331, "win": 0, "start_time": 1792303063, "duration_s": 2086, "damage": 13123}, {"match_id": 119362656, "account_id": 133941028, "hero_id": 12, "kills": 1, "deaths": 9, "assists": 6, "souls": 29180, "win": 0, "start_time": 1792303063, "duration_s": 2086, "damage": 15669}, {"match_id": 119362656, "account_id": 1242779766, "hero_id": 2, "kills": 1, "deaths": 5, "assists": 8, "souls": 27145, "win": 0, "start_time": 1792303063, "duration_s": 2086, "damage": 11116}, {"match_id": 119321875, "account_id": 1349138381, "hero_id": 15, "kills": 6, "deaths": 6, "assists": 14, "souls": 36121, "win": 0, "start_time": 1792297920, "duration_s": 2022, "damage": 36890}, {"match_id": 119321875, "account_id": 133941028, "hero_id": 64, "kills": 15, "deaths": 7, "assists": 12, "souls": 36932, "win": 0, "start_time": 1792297920, "duration_s": 2022, "damage": 47181}, {"match_id": 119321875, "account_id": 1242779766, "hero_id": 2, "kills": 5, "deaths": 2, "assists": 20, "souls": 33417, "win": 0, "start_time": 1792297920, "duration_s": 2022, "damage": 17049}, {"match_id": 119261193, "account_id": 1349138381, "hero_id": 1, "kills": 3, "deaths": 15, "assists": 13, "souls": 39161, "win": 0, "start_time": 1792291519, "duration_s": 2528, "damage": 18862}, {"match_id": 119057203, "account_id": 1349138381, "hero_id": 1, "kills": 3, "deaths": 5, "assists": 14, "souls": 30756, "win": 0, "start_time": 1792270936, "duration_s": 1817, "damage": 25577}, {"match_id": 118562425, "account_id": 1349138381, "hero_id": 76, "kills": 10, "deaths": 15, "assists": 13, "souls": 49853, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 53181}, {"match_id": 118562425, "account_id": 133941028, "hero_id": 64, "kills": 6, "deaths": 14, "assists": 9, "souls": 51599, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 32375}, {"match_id": 118562425, "account_id": 1242779766, "hero_id": 2, "kills": 2, "deaths": 9, "assists": 14, "souls": 44984, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 39082}, {"match_id": 118477101, "account_id": 1242779766, "hero_id": 2, "kills": 8, "deaths": 3, "assists": 9, "souls": 30710, "win": 1, "start_time": 1792206957, "duration_s": 1767, "damage": 18733}, {"match_id": 117836538, "account_id": 133941028, "hero_id": 64, "kills": 19, "deaths": 7, "assists": 6, "souls": 42884, "win": 1, "start_time": 1792128407, "duration_s": 2263, "damage": 54464}, {"match_id": 117836538, "account_id": 1242779766, "hero_id": 2, "kills": 7, "deaths": 6, "assists": 13, "souls": 35867, "win": 1, "start_time": 1792128407, "duration_s": 2263, "damage": 36945}, {"match_id": 117808315, "account_id": 133941028, "hero_id": 64, "kills": 12, "deaths": 11, "assists": 9, "souls": 32964, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": 36050}, {"match_id": 117808315, "account_id": 1242779766, "hero_id": 2, "kills": 6, "deaths": 4, "assists": 14, "souls": 32078, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": 22890}, {"match_id": 117808315, "account_id": 1046229974, "hero_id": 6, "kills": 2, "deaths": 14, "assists": 13, "souls": 25663, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": null}, {"match_id": 117191592, "account_id": 133941028, "hero_id": 64, "kills": 27, "deaths": 8, "assists": 20, "souls": 55211, "win": 0, "start_time": 1792038513, "duration_s": 2428, "damage": 50349}, {"match_id": 117191592, "account_id": 1242779766, "hero_id": 2, "kills": 11, "deaths": 9, "assists": 31, "souls": 39378, "win": 0, "start_time": 1792038513, "duration_s": 2428, "damage": 30057}, {"match_id": 59328274, "account_id": 1242779766, "hero_id": 2, "kills": 2, "deaths": 3, "assists": 19, "souls": 29310, "win": 0, "start_time": 1771306385, "duration_s": 1847, "damage": null}, {"match_id": 55407493, "account_id": 1242779766, "hero_id": 2, "kills": 3, "deaths": 5, "assists": 3, "souls": 20074, "win": 1, "start_time": 1770271810, "duration_s": 1320, "damage": null}, {"match_id": 54103233, "account_id": 1242779766, "hero_id": 64, "kills": 2, "deaths": 7, "assists": 7, "souls": 48000, "win": 0, "start_time": 1769926794, "duration_s": 1404, "damage": null}, {"match_id": 54089593, "account_id": 1242779766, "hero_id": 7, "kills": 0, "deaths": 3, "assists": 6, "souls": 34000, "win": 0, "start_time": 1769923320, "duration_s": 822, "damage": null}];
+const GAMES = [{"match_id": 121405051, "account_id": 1349138381, "hero_id": 1, "kills": 4, "deaths": 5, "assists": 14, "souls": 33933, "win": 1, "start_time": 1792554107, "duration_s": 2069, "damage": 29057, "healing": 4087}, {"match_id": 121405051, "account_id": 133941028, "hero_id": 64, "kills": 9, "deaths": 4, "assists": 10, "souls": 38714, "win": 1, "start_time": 1792554107, "duration_s": 2069, "damage": 28488, "healing": 6229}, {"match_id": 121405051, "account_id": 1242779766, "hero_id": 2, "kills": 1, "deaths": 2, "assists": 13, "souls": 38741, "win": 1, "start_time": 1792554107, "duration_s": 2069, "damage": 17082, "healing": 2848}, {"match_id": 121379943, "account_id": 1349138381, "hero_id": 4, "kills": 2, "deaths": 7, "assists": 8, "souls": 35687, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": 23664, "healing": 6498}, {"match_id": 121379943, "account_id": 133941028, "hero_id": 87, "kills": 2, "deaths": 7, "assists": 9, "souls": 26812, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": 13634, "healing": 12613}, {"match_id": 121379943, "account_id": 1242779766, "hero_id": 2, "kills": 4, "deaths": 5, "assists": 8, "souls": 26961, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": 15459, "healing": 1493}, {"match_id": 121379943, "account_id": 1513582526, "hero_id": 3, "kills": 1, "deaths": 7, "assists": 7, "souls": 23656, "win": 0, "start_time": 1792551506, "duration_s": 2043, "damage": null, "healing": null}, {"match_id": 119396116, "account_id": 1349138381, "hero_id": 4, "kills": 7, "deaths": 7, "assists": 6, "souls": 30611, "win": 0, "start_time": 1792307743, "duration_s": 1742, "damage": 30117, "healing": 21806}, {"match_id": 119396116, "account_id": 133941028, "hero_id": 64, "kills": 9, "deaths": 10, "assists": 7, "souls": 26008, "win": 0, "start_time": 1792307743, "duration_s": 1742, "damage": 25018, "healing": 4597}, {"match_id": 119396116, "account_id": 1242779766, "hero_id": 2, "kills": 1, "deaths": 5, "assists": 2, "souls": 24567, "win": 0, "start_time": 1792307743, "duration_s": 1742, "damage": 9948, "healing": 1302}, {"match_id": 119362656, "account_id": 1349138381, "hero_id": 80, "kills": 6, "deaths": 12, "assists": 5, "souls": 27331, "win": 0, "start_time": 1792303063, "duration_s": 2086, "damage": 13123, "healing": 5528}, {"match_id": 119362656, "account_id": 133941028, "hero_id": 12, "kills": 1, "deaths": 9, "assists": 6, "souls": 29180, "win": 0, "start_time": 1792303063, "duration_s": 2086, "damage": 15669, "healing": 6939}, {"match_id": 119362656, "account_id": 1242779766, "hero_id": 2, "kills": 1, "deaths": 5, "assists": 8, "souls": 27145, "win": 0, "start_time": 1792303063, "duration_s": 2086, "damage": 11116, "healing": 1790}, {"match_id": 119321875, "account_id": 1349138381, "hero_id": 15, "kills": 6, "deaths": 6, "assists": 14, "souls": 36121, "win": 0, "start_time": 1792297920, "duration_s": 2022, "damage": 36890, "healing": 2740}, {"match_id": 119321875, "account_id": 133941028, "hero_id": 64, "kills": 15, "deaths": 7, "assists": 12, "souls": 36932, "win": 0, "start_time": 1792297920, "duration_s": 2022, "damage": 47181, "healing": 8805}, {"match_id": 119321875, "account_id": 1242779766, "hero_id": 2, "kills": 5, "deaths": 2, "assists": 20, "souls": 33417, "win": 0, "start_time": 1792297920, "duration_s": 2022, "damage": 17049, "healing": 4054}, {"match_id": 119261193, "account_id": 1349138381, "hero_id": 1, "kills": 3, "deaths": 15, "assists": 13, "souls": 39161, "win": 0, "start_time": 1792291519, "duration_s": 2528, "damage": 18862, "healing": 5426}, {"match_id": 119057203, "account_id": 1349138381, "hero_id": 1, "kills": 3, "deaths": 5, "assists": 14, "souls": 30756, "win": 0, "start_time": 1792270936, "duration_s": 1817, "damage": 25577, "healing": 2601}, {"match_id": 118562425, "account_id": 1349138381, "hero_id": 76, "kills": 10, "deaths": 15, "assists": 13, "souls": 49853, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 53181, "healing": 20785}, {"match_id": 118562425, "account_id": 133941028, "hero_id": 64, "kills": 6, "deaths": 14, "assists": 9, "souls": 51599, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 32375, "healing": 5141}, {"match_id": 118562425, "account_id": 1242779766, "hero_id": 2, "kills": 2, "deaths": 9, "assists": 14, "souls": 44984, "win": 0, "start_time": 1792215795, "duration_s": 2833, "damage": 39082, "healing": 6130}, {"match_id": 118477101, "account_id": 1242779766, "hero_id": 2, "kills": 8, "deaths": 3, "assists": 9, "souls": 30710, "win": 1, "start_time": 1792206957, "duration_s": 1767, "damage": 18733, "healing": 3464}, {"match_id": 117836538, "account_id": 133941028, "hero_id": 64, "kills": 19, "deaths": 7, "assists": 6, "souls": 42884, "win": 1, "start_time": 1792128407, "duration_s": 2263, "damage": 54464, "healing": 9089}, {"match_id": 117836538, "account_id": 1242779766, "hero_id": 2, "kills": 7, "deaths": 6, "assists": 13, "souls": 35867, "win": 1, "start_time": 1792128407, "duration_s": 2263, "damage": 36945, "healing": 5202}, {"match_id": 117808315, "account_id": 133941028, "hero_id": 64, "kills": 12, "deaths": 11, "assists": 9, "souls": 32964, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": 36050, "healing": 7806}, {"match_id": 117808315, "account_id": 1242779766, "hero_id": 2, "kills": 6, "deaths": 4, "assists": 14, "souls": 32078, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": 22890, "healing": 1501}, {"match_id": 117808315, "account_id": 1046229974, "hero_id": 6, "kills": 2, "deaths": 14, "assists": 13, "souls": 25663, "win": 0, "start_time": 1792124209, "duration_s": 2194, "damage": null, "healing": null}, {"match_id": 117191592, "account_id": 133941028, "hero_id": 64, "kills": 27, "deaths": 8, "assists": 20, "souls": 55211, "win": 0, "start_time": 1792038513, "duration_s": 2428, "damage": 50349, "healing": 15847}, {"match_id": 117191592, "account_id": 1242779766, "hero_id": 2, "kills": 11, "deaths": 9, "assists": 31, "souls": 39378, "win": 0, "start_time": 1792038513, "duration_s": 2428, "damage": 30057, "healing": 3586}, {"match_id": 59328274, "account_id": 1242779766, "hero_id": 2, "kills": 2, "deaths": 3, "assists": 19, "souls": 29310, "win": 0, "start_time": 1771306385, "duration_s": 1847, "damage": null, "healing": null}, {"match_id": 55407493, "account_id": 1242779766, "hero_id": 2, "kills": 3, "deaths": 5, "assists": 3, "souls": 20074, "win": 1, "start_time": 1770271810, "duration_s": 1320, "damage": null, "healing": null}, {"match_id": 54103233, "account_id": 1242779766, "hero_id": 64, "kills": 2, "deaths": 7, "assists": 7, "souls": 48000, "win": 0, "start_time": 1769926794, "duration_s": 1404, "damage": null, "healing": null}, {"match_id": 54089593, "account_id": 1242779766, "hero_id": 7, "kills": 0, "deaths": 3, "assists": 6, "souls": 34000, "win": 0, "start_time": 1769923320, "duration_s": 822, "damage": null, "healing": null}];
 
 const $ = id => document.getElementById(id);
 const k = n => n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n ?? 0);
@@ -473,6 +484,79 @@ function runHTML(title, win) {
   }
   return best ? playerRecordHTML(title, best.id, `${best.v} in a row`, ` · ${day(best.at)}`) : "";
 }
+// achievements: one-time unlocks from games played after launch (older games still feed streaks and totals)
+const ACH_SINCE = 1792639092;
+const mtDay = t => new Date(t * 1000).toLocaleDateString("en-CA", {timeZone: "America/Denver"});
+const mtHour = t => +new Date(t * 1000).toLocaleString("en-US", {timeZone: "America/Denver", hour: "numeric", hourCycle: "h23"});
+// [key, emoji, name, rule, glory|shame, test(game, x)]  x = the player's history up to and including this game
+const ACH = [
+  ["bodycount", "🔪", "Body Count", "20+ kills in a game", "glory", g => g.kills >= 20],
+  ["massacre", "🩸", "Massacre", "30+ kills in a game", "glory", g => g.kills >= 30],
+  ["accomplice", "🤝", "Accomplice", "25+ assists in a game", "glory", g => g.assists >= 25],
+  ["oldmoney", "💰", "Old Money", "60k+ souls in a game", "glory", g => g.souls >= 60000],
+  ["demolition", "💥", "Demolition Crew", "50k+ hero damage in a game", "glory", g => (g.damage || 0) >= 50000],
+  ["medic", "🩹", "Field Medic", "15k+ healing in a game", "glory", g => (g.healing || 0) >= 15000],
+  ["untouchable", "😇", "Untouchable", "Win without dying once", "glory", g => g.win && g.deaths === 0],
+  ["surgical", "🧠", "Surgical", "10+ KDA (at least 10 kills + assists)", "glory", g => kda(g) >= 10 && g.kills + g.assists >= 10],
+  ["speedrun", "⚡", "Speedrun", "Win in under 20 minutes", "glory", g => g.win && g.duration_s < 1200],
+  ["marathon", "🏃", "Marathon Man", "Win a 45+ minute game", "glory", g => g.win && g.duration_s >= 2700],
+  ["squadgoals", "🎯", "Squad Goals", "Squad win where everyone got 5+ kills", "glory", (g, x) => g.win && x.m.players.length >= 2 && x.m.players.every(p => p.kills >= 5)],
+  ["hattrick", "👑", "Hat Trick", "MVP of 3 squad games in a row", "glory", (g, x) => x.mvpRun >= 3],
+  ["tear", "🔥", "On a Tear", "Win 5 in a row", "glory", (g, x) => x.run >= 5],
+  ["range", "🎭", "Range", "Win on 5 different heroes", "glory", (g, x) => x.won >= 5],
+  ["loyalist", "🦴", "Loyalist", "Play 10 games on one hero", "glory", (g, x) => x.heroN >= 10],
+  ["regular", "🗓️", "Regular", "50 tracked games", "glory", (g, x) => x.total >= 50],
+  ["pacifist", "🕊️", "Pacifist", "Win with 0 kills", "shame", g => g.win && g.kills === 0],
+  ["flyer", "🪦", "Frequent Flyer", "15+ deaths in a game", "shame", g => g.deaths >= 15],
+  ["casket", "⚰️", "Closed Casket", "0 kills and 10+ deaths", "shame", g => g.kills === 0 && g.deaths >= 10],
+  ["carried", "🎒", "Carried", "Win while being the squad's anchor", "shame", (g, x) => g.win && x.rank === "anchor"],
+  ["sinking", "⚓", "Sinking Ship", "Anchor 3 squad games in a row", "shame", (g, x) => x.anchorRun >= 3],
+  ["iceage", "🧊", "Ice Age", "Lose 5 in a row", "shame", (g, x) => x.run <= -5],
+  ["roughnight", "🫠", "Rough Night", "Lose 3 games in one day", "shame", (g, x) => !g.win && x.dayL >= 3],
+  ["bankrupt", "💸", "Bankrupt", "Under 20k souls in a 30+ minute game", "shame", g => g.souls < 20000 && g.duration_s >= 1800],
+  ["mercy", "🏳️", "Mercy Rule", "Lose in under 20 minutes", "shame", g => !g.win && g.duration_s < 1200],
+  ["graveyard", "🌙", "Graveyard Shift", "Start a game between 2 and 5 AM", "shame", g => mtHour(g.start_time) >= 2 && mtHour(g.start_time) < 5],
+];
+const matchOf = Object.fromEntries(matches.map(m => [m.id, m]));
+function rankOf(g) {
+  const m = matchOf[g.match_id];
+  if (m.players.length < 2) return null;
+  const r = [...m.players].sort((a, b) => impact(b) - impact(a));
+  return r[0] === g ? "mvp" : r.at(-1) === g ? "anchor" : null;
+}
+const UNLOCKS = {};  // account id -> [{a, g}] in unlock order
+for (const p of players) {
+  const got = new Set(), out = (UNLOCKS[p.id] = []), won = new Set(), heroN = {}, dayL = {};
+  let run = 0, mvpRun = 0, anchorRun = 0;
+  p.gs.forEach((g, i) => {
+    run = g.win ? Math.max(run, 0) + 1 : Math.min(run, 0) - 1;
+    const rank = rankOf(g);
+    if (rank || matchOf[g.match_id].players.length > 1) {  // solo games don't break MVP / anchor runs
+      mvpRun = rank === "mvp" ? mvpRun + 1 : 0;
+      anchorRun = rank === "anchor" ? anchorRun + 1 : 0;
+    }
+    if (g.win) won.add(g.hero_id);
+    heroN[g.hero_id] = (heroN[g.hero_id] || 0) + 1;
+    const d = mtDay(g.start_time);
+    if (!g.win) dayL[d] = (dayL[d] || 0) + 1;
+    if (g.start_time < ACH_SINCE) return;
+    const x = {rank, run, mvpRun, anchorRun, won: won.size, heroN: heroN[g.hero_id], total: i + 1, dayL: dayL[d] || 0, m: matchOf[g.match_id]};
+    for (const a of ACH) if (!got.has(a[0]) && a[5](g, x)) { got.add(a[0]); out.push({a, g}); }
+  });
+}
+const achTile = (a, sub, g) => `<div class="${a[4]}${g ? "" : " locked"}"${g ? ` title="Unlocked ${day(g.start_time)} on ${HEROES[g.hero_id]}"` : ""}><span class="e" aria-hidden="true">${a[1]}</span><div><div class="n">${a[2]}</div><div class="d">${sub}</div></div></div>`;
+function achHTML(p) {
+  const mine = Object.fromEntries((UNLOCKS[p.id] || []).map(u => [u.a[0], u.g]));
+  const order = [...ACH].sort((a, b) => !!mine[b[0]] - !!mine[a[0]]);
+  return `<section><h2>Achievements · ${Object.keys(mine).length} / ${ACH.length}</h2><div class="ach">${
+    order.map(a => achTile(a, a[3] + (mine[a[0]] ? ` · ${day(mine[a[0]].start_time)}` : ""), mine[a[0]])).join("")}</div></section>`;
+}
+const feed = Object.entries(UNLOCKS).flatMap(([id, us]) => us.map(u => ({id, ...u})))
+  .sort((a, b) => b.g.start_time - a.g.start_time).slice(0, 12);
+$("achFeed").innerHTML = feed.length
+  ? feed.map(u => achTile(u.a, `<b>${esc(NAMES[u.id])}</b> · ${u.a[3]} · ${day(u.g.start_time)}`, u.g)).join("")
+  : `<p class="empty">Nothing unlocked yet. ${ACH.length} achievements up for grabs, starting with the next game.</p>`;
+
 $("fame").innerHTML = REC.filter(r => r[0] === "fame").map(recordHTML).join("") + runHTML("Longest win streak", true) + tallyHTML("Most MVPs", "mvp", "MVP");
 $("shame").innerHTML = REC.filter(r => r[0] === "shame").map(recordHTML).join("") + runHTML("Longest loss streak", false) + tallyHTML("Most times anchor", "anchor", "time");
 $("miniFame").innerHTML = [REC[0], REC[2], REC[5]].map(recordHTML).join("");
@@ -529,6 +613,7 @@ function renderPlayer(p) {
       ? gameCard(ranked[0], "best", "Only game", "One game on file. It is both the best and the worst.")
       : gameCard(ranked[0], "best", "Best game", "Exhibit A.") + gameCard(ranked.at(-1), "worst", "Worst game", "Exhibit B. The defense rests.")}</div>
     </section>
+    ${achHTML(p)}
     <section><h2>Hero pool</h2><div class="heroes small">${pool.map(h => `
       <div class="hcard" style="background-image:url('${card(h.id)}')">
         <div class="info"><b>${HEROES[h.id]}</b>
