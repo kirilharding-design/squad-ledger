@@ -94,6 +94,7 @@ section { padding-top: 26px; }
 .pl .c { font-family: var(--cond); font-weight: 700; font-size: 17px; text-align: right; }
 .pl .c small { display: block; font-weight: 500; font-size: 11px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
 .crown { color: var(--amber); font-size: 12px; margin-left: 4px; }
+.crown.anchor { color: var(--muted); }
 .mhead { display: flex; justify-content: space-between; gap: 8px; font-family: var(--cond); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 0 2px; }
 .extra { grid-column: 1 / -1; padding: 10px 14px 12px 106px; font-size: 13px; color: var(--muted); border-top: 1px dashed var(--line); }
 @media (max-width: 620px) {
@@ -231,7 +232,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
 <div class="wrap">
   <div class="top">
     <div class="brand"><div class="sigil">S</div><div><h1>Squad Ledger</h1><small>Huddy · Javelinjoe · Kiril · ashton.atkinson</small></div></div>
-    <span class="tag">Updated Oct 21, 5:50 PM</span>
+    <span class="tag">Updated Oct 21, 7:48 PM</span>
   </div>
 
   <nav role="tablist" aria-label="Sections">
@@ -284,7 +285,7 @@ const mmss = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 const when = t => new Date(t * 1000).toLocaleString("en-US", {timeZone: "America/Denver", month: "short", day: "numeric", hour: "numeric", minute: "2-digit"});
 const day = t => new Date(t * 1000).toLocaleDateString("en-US", {timeZone: "America/Denver", month: "short", day: "numeric"});
 const kda = g => (g.kills + g.assists) / Math.max(g.deaths, 1);
-const impact = g => g.kills * 3 + g.assists * 1.5 - g.deaths * 2 + g.souls / 4000;
+const impact = g => g.kills * 3 + g.assists * 1.5 - g.deaths * 2 + g.souls / 4000 + (g.damage || 0) / 5000;
 const card = h => HERO_KEY[h] ? `img/${HERO_KEY[h]}_card.webp` : "";
 const icon = h => HERO_KEY[h] ? `img/${HERO_KEY[h]}_sm.webp` : "";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
@@ -385,7 +386,7 @@ function matchHTML(m) {
     <div class="lines">${ranked.map((g, i) => `
       <div class="pl">
         <img src="${icon(g.hero_id)}" alt="${HEROES[g.hero_id]}">
-        <div class="who"><b><a href="#player-${g.account_id}">${esc(NAMES[g.account_id])}</a>${ranked.length > 1 && i === 0 ? '<span class="crown">★ MVP</span>' : ""}</b><span>${HEROES[g.hero_id]}</span></div>
+        <div class="who"><b><a href="#player-${g.account_id}">${esc(NAMES[g.account_id])}</a>${ranked.length > 1 && i === 0 ? '<span class="crown">★ MVP</span>' : ranked.length > 1 && i === ranked.length - 1 ? '<span class="crown anchor">⚓ Anchor</span>' : ""}</b><span>${HEROES[g.hero_id]}</span></div>
         <div class="c num">${g.kills}/${g.deaths}/${g.assists}<small>K/D/A</small></div>
         <div class="c num soul">${k(g.souls)}<small>Souls</small></div>
         <div class="c num dmg">${g.damage ? k(g.damage) : "–"}<small>Damage</small></div>
@@ -431,8 +432,27 @@ function recordHTML([, title, val, dir, ok, fmt]) {
   return `<div class="record"><img src="${card(g.hero_id)}" alt="${HEROES[g.hero_id]}">
     <div><div class="t">${title}</div><div class="v num">${fmt(val(g))}</div><div class="h"><b>${esc(NAMES[g.account_id])}</b> · ${HEROES[g.hero_id]} · ${day(g.start_time)}</div></div></div>`;
 }
-$("fame").innerHTML = REC.filter(r => r[0] === "fame").map(recordHTML).join("");
-$("shame").innerHTML = REC.filter(r => r[0] === "shame").map(recordHTML).join("");
+// MVP / anchor tallies over games with 2+ squad members; ties go to whoever got there first
+function tally(which) {
+  const n = {}, at = {};
+  for (const m of [...matches].reverse()) {
+    if (m.players.length < 2) continue;
+    const r = [...m.players].sort((a, b) => impact(b) - impact(a));
+    const id = (which === "mvp" ? r[0] : r.at(-1)).account_id;
+    n[id] = (n[id] || 0) + 1; at[id] = m.start;
+  }
+  return Object.keys(n).map(Number).sort((a, b) => n[b] - n[a] || at[a] - at[b]).map(id => ({id, v: n[id]}));
+}
+function tallyHTML(title, which, unit) {
+  const [top, ...rest] = tally(which);
+  if (!top) return "";
+  const main = pmap[top.id] ? pmap[top.id].main : null;
+  const s = v => `${v} ${unit}${v === 1 ? "" : "s"}`;
+  return `<div class="record"><img src="${card(main)}" alt="${HEROES[main] || ""}">
+    <div><div class="t">${title}</div><div class="v num">${s(top.v)}</div><div class="h"><b>${esc(NAMES[top.id])}</b>${rest.map(r => ` · ${esc(NAMES[r.id])} ${r.v}`).join("")}</div></div></div>`;
+}
+$("fame").innerHTML = REC.filter(r => r[0] === "fame").map(recordHTML).join("") + tallyHTML("Most MVPs", "mvp", "MVP");
+$("shame").innerHTML = REC.filter(r => r[0] === "shame").map(recordHTML).join("") + tallyHTML("Most times anchor", "anchor", "time");
 $("miniFame").innerHTML = [REC[0], REC[2], REC[5]].map(recordHTML).join("");
 
 // heroes
